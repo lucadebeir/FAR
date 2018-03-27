@@ -1,0 +1,238 @@
+
+Stack Overflow.NameWithoutStackExchange
+
+    Questions
+    Developer Jobs
+    Tags
+    Users
+
+Log In Sign Up
+The results are in! See the 2018 Developer Survey results. »
+
+Join Stack Overflow to learn, share knowledge, and build your career.
+Email Sign Up
+or sign in with
+Google
+Facebook
+How can I convert a file pointer ( FILE* fp ) to a file descriptor (int fd)?
+Ask Question
+up vote
+130
+down vote
+favorite
+22
+
+I have a FILE *, returned by a call to fopen(). I need to get a file descriptor from it, to make calls like fsync(fd) on it. What's the function to get a file descriptor from a file pointer?
+c linux unix file posix
+shareimprove this question
+edited Sep 13 '14 at 20:25
+asked Jul 2 '10 at 16:01
+Novelocrat
+21.7k115181
+
+    7
+    Self-answers in this "jeopardy" form are encouraged. – dmckee Jul 2 '10 at 23:18
+    Or you could open the file with open(2), and you would have a file descriptor from the beginning – Antoine Pelisse Jun 29 '13 at 16:13
+    6
+    And the inverse: How to get a FILE pointer from a file descriptor? – Michael Burr Oct 1 '13 at 20:35
+
+add a comment
+2 Answers
+active
+oldest
+votes
+up vote
+169
+down vote
+accepted
+
+The proper function is int fileno(FILE *stream). It can be found in <stdio.h>, and is a POSIX standard but not standard C.
+shareimprove this answer
+edited Dec 22 '15 at 16:48
+Dr. Person Person II
+1,79842229
+answered Jul 2 '10 at 16:02
+Novelocrat
+21.7k115181
+
+    4
+    Strictly speaking, there wouldn't be any need to mention any headers or libraries if the function was indeed a part of standard C library. However, it is not standard, which is why it might make sense to mention the header at least. – AnT Jul 2 '10 at 23:55
+    16
+    Accessing functions in the standard C library does require including headers, at least if your compiler expects prototypes (I never remember what's actually standard behavior in that respect). Without headers, no names are defined at the beginning of a C file. – Novelocrat Jul 3 '10 at 0:20
+    @Novelocrat: I didn't mean that there's no need to #include anything. I merely meant that it is always easy to find the name of the proper header for a standard function. I.e. it is not really critical to mention the exact header name in the answer. – AnT Jul 3 '10 at 1:51
+    7
+    This is a good answer, but it is worth noting that this isn't a standard c function, it is a posix function. – Evan Teran Jul 3 '10 at 4:00
+    3
+    It is not in the C standard, because file descriptors are a UNIX thing (on Linux, it is open(2), not open(3)). – not-a-user Oct 16 '14 at 9:08
+
+add a comment
+up vote
+28
+down vote
+
+Even if fileno(FILE *) may return a file descriptor, be VERY careful not to bypass stdio's buffer. If there is buffer data (either read or unflushed write), reads/writes from the file descriptor might give you unexpected results.
+
+To answer one of the side questions, to convert a file descriptor to a FILE pointer, use fdopen(3)
+shareimprove this answer
+edited Dec 22 '15 at 16:32
+Brett Wolfington
+4,66332044
+answered Nov 14 '13 at 5:27
+Mark Gerolimatos
+9561021
+
+    I don't believe this was helpful to people searching for this specifically, and this has already been answered in the comment section of OP's post a month before this was written. This is more of a logic clarification as opposed to real information. – kevr Feb 1 at 15:03
+
+add a comment
+Your Answer
+
+ 
+Sign up or log in
+Sign up using Google
+Sign up using Facebook
+Sign up using Email and Password
+Post as a guest
+Name
+Email
+
+By posting your answer, you agree to the privacy policy and terms of service.
+Not the answer you're looking for? Browse other questions tagged c linux unix file posix or ask your own question.
+
+asked
+	
+
+7 years, 8 months ago
+
+viewed
+	
+
+78,208 times
+
+active
+	
+
+8 months ago
+Upcoming Events
+2018 Community Moderator Election
+ends in 7 days
+
+Work from anywhere
+
+    Senior Software Developer - Help us see into the future!
+    YouGovNo office location
+    Remote
+    pythonmongodb
+    Backend Developer
+    Lingoda GmbHBerlin, Germany
+    Remote
+    symfonysolid-principles
+    Software Engineer (Product Development)
+    BriteCoreSpringfield, MO
+    $50k - $70k
+    Remote
+    pythondjango
+    Amazon Web Services (AWS) Production Operations Engineer
+    WebRTC.venturesNo office location
+    Remote
+    linuxamazon-web-services
+
+    Work remotely - from home or wherever you choose.
+    Browse remote jobs
+
+Linked
+-4
+Access file descriptor from FILE * pointer in C
+58
+How to get a FILE pointer from a file descriptor?
+6
+How do I find a filename, given a FILE pointer?
+0
+“invalid conversion from 'FILE* {aka _iobuf}' to 'int'” error
+3
+read in MIPS file opened in C
+3
+Error when trying to write() a file larger than 2 GB on Linux
+0
+lseek() Trying to use with a byte file but pointer is of FILE type
+2
+File I/O performance is too good to be true?
+Related
+4012
+How to check whether a file exists?
+635
+How to get file creation & modification date/times in Python?
+2394
+How can I pretty-print JSON in a (Unix) shell script?
+1421
+How can I profile C++ code running in Linux?
+947
+How do function pointers in C work?
+3902
+How do I include a JavaScript file in another JavaScript file?
+2473
+Improve INSERT-per-second performance of SQLite?
+1313
+How to symlink a file in Linux?
+727
+How to download a file from server using SSH?
+3234
+How do I find all files containing specific text on Linux?
+Hot Network Questions
+
+    Writing an "honest" Blurb?
+    Why did the Enterprise not have any HAZMAT suits?
+    Inverse square rule for strong forces
+    A story where a son surpasses father's intelligence at very young age
+    Riddle: In an improved ocean
+    No A, just CAPS LOCK
+    What is Devoid and what special about it
+    How is tire rubber removed from the runway?
+    Why is my Linux system repeating every command that I type?
+    Bought stock at higher price than current price
+    How do you say you are a nosey person in Korean?
+    Create Seamlessly Looping Animated Displacements
+    What can an independent election observer do if they notice irregularities?
+
+more hot questions
+question feed
+Stack Overflow
+
+    Questions
+    Jobs
+    Developer Jobs Directory
+    Salary Calculator
+    Help
+    Mobile
+
+Stack Overflow
+Business
+
+    Talent
+    Ads
+    Enterprise
+
+Company
+
+    About
+    Press
+    Work Here
+    Legal
+    Privacy Policy
+    Contact Us
+
+Stack Exchange
+Network
+
+    Technology
+    Life / Arts
+    Culture / Recreation
+    Science
+    Other
+
+    Blog
+    Facebook
+    Twitter
+    LinkedIn
+
+site design / logo © 2018 Stack Exchange Inc; user contributions licensed under cc by-sa 3.0 with attribution required. rev 2018.3.19.29483
+
