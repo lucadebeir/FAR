@@ -1,4 +1,6 @@
 #include "http.h"
+#include <string.h>
+
 CLIENT *clnt;
 
 int request1(char* request) {

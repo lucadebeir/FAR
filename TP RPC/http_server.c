@@ -27,7 +27,7 @@ http_request1_1_svc(data1 *argp, struct svc_req *rqstp)
 			FILE *file;
 			file = fopen(requested_file, "r");
 			result.fd = fileno(file);
-			//fclose(file);
+			fclose(file);
 		} else {
 			result.fd = -1;
 		}
